@@ -15,6 +15,10 @@ module ActionDispatch
 
         field :data, :type => Moped::BSON::Binary, :default => Moped::BSON::Binary.new(:generic, Marshal.dump({}))
 
+        field :data_json, :type => String, :default => "{}" 
+
+        index({ _id: 1 }, { unique: true, background: true })
+
         attr_accessible :_id, :data
       end
 
