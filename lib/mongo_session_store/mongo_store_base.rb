@@ -31,6 +31,7 @@ module ActionDispatch
         end
 
         def set_session(env, sid, session_data, options = {})
+          tries ||= 3
           record = get_session_model(env, sid)
           record.data = pack(session_data)
           record.data_json = session_data.to_json
@@ -39,6 +40,12 @@ module ActionDispatch
           # depending on whether or not the session was saved or not.
           # However, ActionPack seems to want a session id instead.
           record.save ? sid : false
+        rescue Exception
+          if (tries -= 1).zero?
+            raise
+          else
+            retry
+          end
         end
 
         def find_session(id)
