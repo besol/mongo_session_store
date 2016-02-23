@@ -15,7 +15,7 @@ module ActionDispatch
 
         field :data, :type => Moped::BSON::Binary, :default => Moped::BSON::Binary.new(:generic, Marshal.dump({}))
 
-        field :data_json, :type => String, :default => "{}" 
+        field :data_json, :type => String, :default => "{}"
 
         index({ _id: 1 }, { unique: true, background: true })
 
@@ -25,6 +25,9 @@ module ActionDispatch
       private
       def pack(data)
         Moped::BSON::Binary.new(:generic, Marshal.dump(data))
+      end
+      def session_class
+        super.with(consistency: :strong)
       end
     end
   end
